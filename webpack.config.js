@@ -1,0 +1,68 @@
+const webpack = require('webpack');
+const path = require('path');
+const HtmlWebpackPlugin = require("html-webpack-plugin");
+const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
+const { CleanWebpackPlugin } = require('clean-webpack-plugin');
+
+module.exports = (env, argv) => {
+	return {
+		context: path.resolve(__dirname, './src'),
+		entry: { app: './index.tsx' },
+		output: {
+			filename: '[name].[contenthash].bundle.js',
+			chunkFilename: '[name].[contenthash].bundle.js',
+			path: path.resolve(__dirname, 'dist'),
+		},
+		devtool: 'source-map',
+		resolve: { extensions: ['.ts', '.tsx', '.js', '.jsx'] },
+		module: {
+			rules: [
+				{ test: /\.tsx?$/, loader: 'ts-loader', options: { transpileOnly: true } },
+				{ test: /\.(ttf|otf|eot|svg|woff(2)?)(\?[a-z0-9]+)?$/, loader: 'file-loader' },
+				{
+					test: /\.(png|jpg|gif)$/,
+					use: [
+						{
+							loader: 'file-loader',
+							options: {
+								name: '[name].[ext]',
+								outputPath: 'assets/img',
+								publicPath: 'assets/img'
+							}
+						}
+					]
+				}
+			],
+		},
+		plugins: [
+			new CleanWebpackPlugin(),
+			new HtmlWebpackPlugin({
+				template: "./index.html",
+				title: 'Mithril TSX Template',
+				filename: "index.html",
+				chunksSortMode: "manual",
+				chunks: ['vendors', 'app'],
+				favicon: 'favicon.ico'
+			}),
+			new webpack.DefinePlugin({
+				// define environment vars here
+			})
+		],
+		optimization: {
+			splitChunks: {
+				cacheGroups: {
+					commons: { test: /[\\/]node_modules[\\/]/, name: "vendors", chunks: "all" }
+				}
+			},
+			minimizer: [
+				new UglifyJsPlugin({
+					uglifyOptions: {
+						output: {
+							comments: false
+						}
+					}
+				}),
+			]
+		}
+	}
+}
