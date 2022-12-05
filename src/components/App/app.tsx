@@ -1,11 +1,10 @@
 import m from 'mithril';
-import { Example } from './components/Example/Example';
+import { Example } from '../Example/Example';
 
 export class App {
 	view() {
 		return (
-			<div>
-				<h1>Mithril Starter App</h1>
+			<div class='flex justify-center items-center'>
 				<Example text="Sample Button"/>
 			</div>
 		);

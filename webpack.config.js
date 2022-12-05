@@ -2,7 +2,10 @@ const webpack = require('webpack');
 const path = require('path');
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
+const tailwindcss = require('tailwindcss');
+const autoprefixer = require('autoprefixer');
 
 module.exports = (env, argv) => {
 	return {
@@ -17,8 +20,24 @@ module.exports = (env, argv) => {
 		resolve: { extensions: ['.ts', '.tsx', '.js', '.jsx'] },
 		module: {
 			rules: [
-				{ test: /\.tsx?$/, loader: 'ts-loader', options: { transpileOnly: true } },
+				{ test: /\.tsx?$/, loader: 'ts-loader'},
 				{ test: /\.(ttf|otf|eot|svg|woff(2)?)(\?[a-z0-9]+)?$/, loader: 'file-loader' },
+				{
+					test: /\.(css|scss|sass)$/,
+					use: [
+						MiniCssExtractPlugin.loader,
+						'css-loader',
+						{
+							loader: 'postcss-loader',
+							options: {
+								postcssOptions: {
+									ident: 'postcss',
+									plugins: [tailwindcss, autoprefixer],
+								},
+							},
+						},
+					],
+				},
 				{
 					test: /\.(png|jpg|gif)$/,
 					use: [
@@ -36,6 +55,10 @@ module.exports = (env, argv) => {
 		},
 		plugins: [
 			new CleanWebpackPlugin(),
+			new MiniCssExtractPlugin({
+				filename: 'styles/[name].[contenthash].css',
+				chunkFilename: '[id].[contenthash].css',
+			}),	
 			new HtmlWebpackPlugin({
 				template: "./index.html",
 				title: 'Mithril TSX Template',
