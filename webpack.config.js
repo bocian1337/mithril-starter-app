@@ -40,16 +40,7 @@ module.exports = (env, argv) => {
 				},
 				{
 					test: /\.(png|jpg|gif)$/,
-					use: [
-						{
-							loader: 'file-loader',
-							options: {
-								name: '[name].[ext]',
-								outputPath: 'assets/img',
-								publicPath: 'assets/img'
-							}
-						}
-					]
+					type: 'asset/resource'
 				}
 			],
 		},

@@ -1,12 +1,10 @@
 import m from 'mithril';
-import { Example } from '../Example/Example';
+import { PokemonScreen } from '../PokemonScreen/PokemonScreen';
 
 export class App {
 	view() {
 		return (
-			<div class='flex justify-center items-center'>
-				<Example text="Sample Button"/>
-			</div>
+				<PokemonScreen />
 		);
 	}
 }
